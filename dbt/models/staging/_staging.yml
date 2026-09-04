@@ -1,0 +1,51 @@
+version: 2
+
+models:
+  - name: stg_yellow_trips
+    description: >
+      One row per yellow taxi trip, typed with derived time fields. No
+      filtering beyond the impossible records dropped at ingestion.
+    columns:
+      - name: vendor_id
+        description: Recording system. 1, 2 documented; 6 undocumented (see D-005).
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [1, 2, 6]
+                quote: false
+
+      - name: pickup_at
+        tests:
+          - not_null
+
+      - name: dropoff_at
+        tests:
+          - not_null
+
+      - name: pickup_location_id
+        description: NYC taxi zone, 1-265.
+        tests:
+          - not_null
+
+      - name: dropoff_location_id
+        tests:
+          - not_null
+
+      - name: payment_type
+        description: 1 card, 2 cash, 3 no charge, 4 dispute, 0 undocumented (D-005).
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [0, 1, 2, 3, 4, 5]
+                quote: false
+
+      - name: has_payment_detail
+        tests:
+          - not_null
+
+      - name: trip_duration_min
+        description: Derived. Always positive since ingestion drops dropoff <= pickup.
+        tests:
+          - not_null

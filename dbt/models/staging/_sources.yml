@@ -1,0 +1,29 @@
+version: 2
+
+sources:
+  - name: tlc
+    description: >
+      Raw NYC Taxi & Limousine Commission trip records, loaded monthly by
+      ingestion/tlc.py. Never modified after load.
+    database: nyc_mobility
+    schema: raw
+    tables:
+      - name: yellow_trips
+        description: >
+          One row per yellow taxi trip. Nov 2024 - Feb 2025.
+          Note: cbd_congestion_fee is null for months before Jan 2025, when
+          congestion pricing began. See docs/decisions.md D-004.
+        columns:
+          - name: vendor_id
+            description: >
+              Recording system. 1 and 2 are documented; 6 appears in the
+              payment_type=0 block and is undocumented.
+          - name: payment_type
+            description: >
+              1 card, 2 cash, 3 no charge, 4 dispute. Value 0 is undocumented
+              and marks 540k records missing five payment/vehicle fields.
+              See D-005.
+          - name: has_payment_detail
+            description: >
+              Added at ingestion. False where payment_type = 0. Use this to
+              exclude records with unusable payment metadata.
