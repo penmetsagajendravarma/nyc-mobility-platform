@@ -40,3 +40,6 @@ models:
     marts:
       +materialized: table
       +schema: marts
+seeds:
+  nyc_mobility:
+    +schema: raw  

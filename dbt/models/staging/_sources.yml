@@ -27,3 +27,13 @@ sources:
             description: >
               Added at ingestion. False where payment_type = 0. Use this to
               exclude records with unusable payment metadata.
+
+  - name: tlc_ref
+    description: Reference data loaded as dbt seeds.
+    database: nyc_mobility
+    schema: raw
+    tables:
+      - name: taxi_zone_lookup
+        description: >
+          265 NYC taxi zones with borough, zone name and service zone.
+          Source: TLC taxi zone lookup table.
