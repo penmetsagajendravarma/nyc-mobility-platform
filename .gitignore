@@ -7,3 +7,5 @@ __pycache__/
 logs/
 target/
 dbt_packages/
+.venv-airflow/
+airflow_home/
