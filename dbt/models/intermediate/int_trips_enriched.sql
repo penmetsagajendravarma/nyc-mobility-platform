@@ -64,7 +64,7 @@ zones as (
         "Borough"      as borough,
         "Zone"         as zone_name,
         service_zone
-    from {{ source('tlc_ref', 'taxi_zone_lookup') }}
+    from {{ ref('taxi_zone_lookup') }}
 
 )
 

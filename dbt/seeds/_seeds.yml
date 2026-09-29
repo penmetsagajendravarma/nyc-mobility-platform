@@ -1,0 +1,22 @@
+version: 2
+
+seeds:
+  - name: taxi_zone_lookup
+    description: >
+      265 NYC taxi zones with borough, zone name and service zone.
+      Source: TLC taxi zone lookup table. Used to translate location IDs into
+      names and to classify zones as inside or outside the congestion relief
+      zone (see docs/decisions.md D-009).
+
+      Note: source column names are CamelCase and must be quoted in Postgres,
+      which folds unquoted identifiers to lowercase.
+    columns:
+      - name: '"LocationID"'
+        description: Zone identifier, 1-265. Joins to pickup/dropoff_location_id.
+        tests:
+          - unique
+          - not_null
+      - name: '"Borough"'
+        description: One of the five boroughs, plus EWR, N/A and Unknown.
+      - name: '"Zone"'
+        description: Neighbourhood name.

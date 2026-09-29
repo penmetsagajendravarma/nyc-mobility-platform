@@ -1,0 +1,70 @@
+version: 2
+
+models:
+  - name: fct_daily_crz_summary
+    description: >
+      One row per day. Treated (CRZ-touching) and control trip volumes side by
+      side, with the ratio used as the primary outcome series for the
+      difference-in-differences analysis. See docs/decisions.md D-011.
+    columns:
+      - name: pickup_date
+        description: Calendar date of pickup. One row per date.
+        tests:
+          - unique
+          - not_null
+
+      - name: treated_trips
+        description: Trips with pickup or dropoff inside the CRZ (D-009).
+        tests:
+          - not_null
+
+      - name: control_trips
+        description: Trips touching neither end of the CRZ.
+        tests:
+          - not_null
+
+      - name: treated_control_ratio
+        description: >
+          treated_trips / control_trips. Robust to city-wide shocks, which move
+          both groups together and cancel.
+        tests:
+          - not_null
+
+      - name: is_post_congestion
+        description: Pickup on or after 2025-01-05, when congestion pricing began.
+        tests:
+          - not_null
+
+  - name: fct_daily_zone_trips
+    description: >
+      One row per date per pickup zone. Grain for geographic views: maps,
+      per-neighbourhood trends, supply-demand mismatch. Aggregated on pickup
+      zone only — dropoff demand is not represented.
+    columns:
+      - name: pickup_date
+        tests:
+          - not_null
+
+      - name: pickup_location_id
+        description: TLC taxi zone, 1-265.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('taxi_zone_lookup')
+                field: '"LocationID"'
+
+      - name: pickup_borough
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['Manhattan', 'Queens', 'Brooklyn', 'Bronx',
+                         'Staten Island', 'EWR', 'N/A', 'Unknown']
+
+      - name: trips
+        tests:
+          - not_null
+
+      - name: pickup_in_crz
+        tests:
+          - not_null
